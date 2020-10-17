@@ -47,6 +47,5 @@ try {
  * Routes configuration
  */
 app.use('/api/auth', authRoutes);
-console.log('finished to load app');
 
 export default app;

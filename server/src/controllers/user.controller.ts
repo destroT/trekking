@@ -52,5 +52,8 @@ export const signIn = async (req:Request, res:Response) => {
 export const me = async (req:Request, res:Response) => {
     const id = req.session!.userId;
     const user = await User.findById(id);
-    return res.json(user);
+    
+    if(!user) return res.json(400).json({ msg: "user not found "});
+
+    return res.json({_id: user._id, username: user.username, email: user.email});
 }
