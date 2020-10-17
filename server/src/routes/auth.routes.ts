@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { signIn, signUp } from '../controllers/user.controller';
+import isAuth from '../middlewares/isAuth';
+import { signIn, signUp, me } from '../controllers/user.controller';
 const router = Router();
 
 router.post('/signup', signUp);
 router.post('/signin', signIn);
-
+router.get('/me', isAuth, me);
 export default router;

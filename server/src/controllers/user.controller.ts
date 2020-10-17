@@ -38,12 +38,19 @@ export const signIn = async (req:Request, res:Response) => {
 
 
     const decrypt = await argon2.verify(<string>user.password, password);
-    // Create JWT
+    
+    // Store the id in the session
     req.session!.userId = user.id;
-
+    console.log(req.session!.userId);
     // Invalid Login
     if(!decrypt) return res.status(400).json(errMsg);
 
     // Return Token
     return res.json({ _id: user._id, username: user.username });
+}
+
+export const me = async (req:Request, res:Response) => {
+    const id = req.session!.userId;
+    const user = await User.findById(id);
+    return res.json(user);
 }
