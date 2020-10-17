@@ -1,32 +1,5 @@
-import express from 'express'
-import * as dotenv from 'dotenv'
-import cors from 'cors'
-import helmet from 'helmet'
-import exampleRoute from './routes/index'
-
-/**
- * Init
- */
-;
-const app = express();
-dotenv.config();
-
-/**
- * App configuration
- */
-app.use(express.json());
-app.use(cors());
-app.use(helmet());
-
-/**
- * Middleware configuration
- */
-
-/**
- * Routes configuration
- */
-app.use('/', exampleRoute);
-
+import app from  './app'
+import './database'
 
 /**
  * Server Activation
