@@ -10,17 +10,18 @@ export const signUp = async (req:Request, res:Response) => {
         return res.json({ msg: "Please fill all the fields" })
     }
 
-    const user = await User.findOne({ username: username, email: email });
-    if(user) {
+    // Check if username or password alredy in use
+    const user = await User.find({$or: [ {username}, {email}]});
+    if(user[0]) {
+        console.log(user[0]);
         res.status(400);
-        res.json({ msg: "Username or Password alredy exists" });
+        return res.json({ msg: "Invalid Username or Email" });
     }
 
     const newUser = new User({username, email, password});
-    await newUser.save();
-
-
+    await newUser.save();    
     return res.json(newUser);
+
 };
 
 export const signIn = async (req:Request, res:Response) => {
@@ -56,4 +57,9 @@ export const me = async (req:Request, res:Response) => {
     if(!user) return res.json(400).json({ msg: "user not found "});
 
     return res.json({_id: user._id, username: user.username, email: user.email});
+}
+
+export const all = async (_:Request, res:Response) => {
+    const users = await User.find().select('_id username').exec();
+    return res.json(users);
 }

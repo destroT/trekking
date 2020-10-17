@@ -1,46 +1,68 @@
-import { model, Schema, Document } from  'mongoose'
+//import * as mongoose from  'mongoose'
+import { prop, getModelForClass, pre, ReturnModelType } from '@typegoose/typegoose'
 import * as argon2 from 'argon2'
-//import { SECRET } from '../config/constants'
+import isEmail from '../utils/validators';
 
-;
-export interface IUser extends Document{
-    email: String,
-    username: String,
-    password: String
-}
-
-const userSchema = new Schema({
-    email: {
-        type: String,
-        unique: true,
-        required: true,
-        lowercase: true,
-        trim: true
-    },
-    username: {
-        type: String,
-        unique: true,
-        required: true,
-        trim: true
-    },
-    password: {
-        type: String,
-        required: true
-    }
-});
-
-userSchema.pre<IUser>('save', async function (next) {
-    const user = this;
-    if(!user.isModified('password')) return next();
-    const hasedPassword = await argon2.hash(<string>user.password);
-    user.password = hasedPassword;
-
+@pre<UserModel>('save', async function (next) {
+    
+    const hasedPassword = await argon2.hash(this.password);
+    this.password = hasedPassword;
     next();
-});
+})
+class UserModel{
+
+    @prop({
+        required: true, 
+        unique: true,
+        lowercase: true, 
+        trim: true, 
+        validate: (value) => isEmail(value) 
+    })
+    email!: string;
+
+    @prop({ required: true, unique: true, trim: true, maxlength: 16, match: /[0-9a-f]*/ })
+    username!: string;
+
+    @prop({ required: true, minlength: 4 })
+    password!: string;
+
+    public static async findAllUsers(this: ReturnModelType<typeof UserModel>) {
+        return this.find({}).exec();
+    }
+};
+
+const User = getModelForClass(UserModel);
+export default User;
+
+// const userSchema = new Schema({
+//     email: {
+//         type: String,
+//         unique: true,
+//         required: true,
+//         lowercase: true,
+//         trim: true
+//     },
+//     username: {
+//         type: String,
+//         unique: true,
+//         required: true,
+//         trim: true
+//     },
+//     password: {
+//         type: String,
+//         required: true
+//     }
+// });
+
+// userSchema.pre<IUser>('save', async function (next) {
+//     const user = this;
+//     if(!user.isModified('password')) return next();
+//     const hasedPassword = await argon2.hash(<string>user.password);
+//     user.password = hasedPassword;
+
+//     next();
+// });
 
 
-userSchema.methods.comparePassword = async function(password: string): Promise<Boolean> {
-    return await argon2.verify(password, this.password);
-}
 
-export default model<IUser>('User', userSchema);
+// export default model<IUser>('User', userSchema);
