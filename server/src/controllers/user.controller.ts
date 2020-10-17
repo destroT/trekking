@@ -37,14 +37,13 @@ export const signIn = async (req:Request, res:Response) => {
     // Username not exists
     if(!user)  return res.status(400).json(errMsg);
 
-
     const decrypt = await argon2.verify(<string>user.password, password);
+    
+    // Invalid Login
+    if(!decrypt) return res.status(400).json(errMsg);
     
     // Store the id in the session
     req.session!.userId = user.id;
-    console.log(req.session!.userId);
-    // Invalid Login
-    if(!decrypt) return res.status(400).json(errMsg);
 
     // Return Token
     return res.json({ _id: user._id, username: user.username });
