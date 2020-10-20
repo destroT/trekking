@@ -82,15 +82,6 @@ export const del = async (req: Request, res: Response) => {
             return res.status(400).json({ msg: "Invalid id" });
         return res.json({ msg: "Object removed with success!" });
 
-        // * It manage better errors but it's superslow ~500ms
-        // // Search the review and check if it was created from the same user
-        // const review = await Review.findById(id);
-
-        // if(!review) return res.status(404).json({ msg: "Object does not exists, invalid Id" });
-        // if(review.author?.toString() != userId) return res.status(403).json({ msg: "You are not authorized to modify the object" });
-        
-        // await Review.findByIdAndRemove(id);
-
     } catch (error) {
         return res.status(402).json(error);
     }

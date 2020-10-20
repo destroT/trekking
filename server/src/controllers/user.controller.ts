@@ -1,6 +1,7 @@
 import { Request, Response } from 'express'
 import * as argon2 from 'argon2'
 import User from '../models/User';
+import { COOKIE_NAME } from '../config/constants';
 
 /**
  * TODO LogOut
@@ -64,4 +65,17 @@ export const me = async (req:Request, res:Response) => {
 export const all = async (_:Request, res:Response) => {
     const users = await User.find().select('_id username').exec();
     return res.json(users);
+}
+
+export const logOut = async (req: Request, res: Response) => {
+
+    if(req.session) {
+        req.session.destroy(() => {
+            res.clearCookie(COOKIE_NAME);
+            res.json({ msg: "Logged out" });
+        });
+        return;
+    } else {
+        return res.status(500).json({ msg: "You must loggedIn to logOut"});
+    }
 }
