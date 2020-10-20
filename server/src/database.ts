@@ -3,7 +3,8 @@ import mongoose, { ConnectionOptions } from 'mongoose'
 const dbOptions: ConnectionOptions = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true
+    useCreateIndex: true,
+    useFindAndModify: false
 };
 
 mongoose.connect(<string>process.env.MONGODB_URI, dbOptions);

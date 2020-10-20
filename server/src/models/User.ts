@@ -1,5 +1,5 @@
 //import * as mongoose from  'mongoose'
-import { prop, getModelForClass, pre, ReturnModelType } from '@typegoose/typegoose'
+import { prop, getModelForClass, pre, ReturnModelType, modelOptions } from '@typegoose/typegoose'
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import * as argon2 from 'argon2'
 import isEmail from '../utils/validators';
@@ -10,6 +10,7 @@ import isEmail from '../utils/validators';
     this.password = hasedPassword;
     next();
 })
+@modelOptions({ options: { customName: 'User'}})
 class UserModel extends TimeStamps{
 
     @prop({
@@ -27,12 +28,12 @@ class UserModel extends TimeStamps{
     @prop({ required: true, minlength: 4 })
     password!: string;
 
-    @prop()
-    timestamps: { createdAt: 'created_at',updatedAt: 'updated_at'};
+    // Profile
 
     public static async findAllUsers(this: ReturnModelType<typeof UserModel>) {
         return this.find({}).exec();
     }
+
 };
 
 const User = getModelForClass(UserModel);

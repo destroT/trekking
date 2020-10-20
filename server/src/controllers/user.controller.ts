@@ -2,6 +2,9 @@ import { Request, Response } from 'express'
 import * as argon2 from 'argon2'
 import User from '../models/User';
 
+/**
+ * TODO LogOut
+ */
 export const signUp = async (req:Request, res:Response) => {
     const { username, email, password} = req.body;
 

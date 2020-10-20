@@ -6,7 +6,8 @@ import helmet from 'helmet'
 import session from 'express-session'
 // Import Routes
 import authRoutes from './routes/auth.routes';
-import { SECRET, __PROD__ } from './config/constants'
+import reviewRoutes from './routes/review.route';
+import { SECRET, __PROD__ } from './config/constants';
 
 
 /**
@@ -47,5 +48,6 @@ try {
  * Routes configuration
  */
 app.use('/api/auth', authRoutes);
+app.use('/api/review', reviewRoutes);
 
 export default app;
