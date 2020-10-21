@@ -2,9 +2,6 @@ import { mongoose } from '@typegoose/typegoose';
 import { Request, Response } from 'express';
 import Route from '../models/Route';
 
-/**
- * ! It inserts an invalid author ObjectId
- */
 export const create = async (req: Request, res: Response) => {
 	const {
 		title,
@@ -20,6 +17,7 @@ export const create = async (req: Request, res: Response) => {
 	} = req.body;
 
 	// TODO: validate all inputs
+
 	const author = mongoose.Types.ObjectId(req.session!.userId);
 
 	try {
@@ -55,4 +53,14 @@ export const del = async (req: Request, res: Response) => {
 	} catch (error) {
 		return res.status(402).json(error);
 	}
+};
+
+export const get = async (req: Request, res: Response) => {
+	const { id } = req.params;
+
+	const route = await Route.findById(id);
+
+	if (!route) return res.status(404).json({ msg: 'Invalid id' });
+
+	return res.json(route);
 };

@@ -7,8 +7,8 @@ import session from 'express-session';
 import { SECRET, __PROD__ } from './config/constants';
 // Import Routes
 import authRoutes from './routes/auth.routes';
-import reviewRoutes from './routes/review.route';
-import routeRoutes from './routes/route.route';
+import reviewRoutes from './routes/review.routes';
+import routeRoutes from './routes/route.routes';
 
 /**
  * Init
