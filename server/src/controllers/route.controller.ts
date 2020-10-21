@@ -1,5 +1,6 @@
 import { mongoose } from '@typegoose/typegoose';
 import { Request, Response } from 'express';
+import { Like } from '../models/enums';
 import Route from '../models/Route';
 
 export const create = async (req: Request, res: Response) => {
@@ -69,4 +70,37 @@ export const getAll = async (_: Request, res: Response) => {
 	const routes = await Route.find({});
 
 	return res.json(routes);
+};
+
+export const like = async (req: Request, res: Response) => {
+	const { like, routeId } = req.body;
+
+	if (!(like == 1 || like == -1))
+		return res.status(400).json({ field: 'like', msg: 'Invalid like' });
+
+	try {
+		// Initialize values
+		const value = like == 1 ? Like.LIKE : Like.DISLIKE;
+		const userId = mongoose.Types.ObjectId(req.session!.userId);
+
+		const routes = await Route.findOneAndUpdate(
+			{ _id: routeId, 'upvotes.userId': userId }, // Check if userId alredy upvoted
+			{ $set: { 'upvotes.$.value': value } }, // If does update
+			{ new: true },
+			async (_, raw) => {
+				// If doesn't push to upvotes
+				if (!raw) {
+					const newUpvote = { value, userId };
+					return await Route.findByIdAndUpdate(routeId, {
+						$addToSet: { upvotes: newUpvote }
+					});
+				} else return raw;
+			}
+		);
+
+		return res.json(routes);
+	} catch (error) {
+		console.log(error);
+		return res.json(error);
+	}
 };
