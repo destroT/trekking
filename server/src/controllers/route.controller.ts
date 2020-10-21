@@ -64,3 +64,9 @@ export const get = async (req: Request, res: Response) => {
 
 	return res.json(route);
 };
+
+export const getAll = async (_: Request, res: Response) => {
+	const routes = await Route.find({});
+
+	return res.json(routes);
+};
