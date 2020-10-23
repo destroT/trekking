@@ -21,8 +21,8 @@ class CommentModel {
 	@prop({ required: true, maxlength: 140, minlength: 3 })
 	text: string;
 
-	@prop({ ref: () => UpvotesHandler })
-	votes: Ref<typeof UpvotesHandler>;
+	@prop({ ref: () => UpvotesHandler, required: true })
+	votes!: Ref<typeof UpvotesHandler>;
 }
 
 const Comment = getModelForClass(CommentModel);
