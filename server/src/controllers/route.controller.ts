@@ -3,6 +3,11 @@ import { Request, Response } from 'express';
 import { Like } from '../models/enums';
 import Route from '../models/Route';
 
+/**
+ * TODO: delete upvote
+ * TODO: update function
+ */
+
 export const create = async (req: Request, res: Response) => {
 	const {
 		title,
@@ -83,24 +88,45 @@ export const like = async (req: Request, res: Response) => {
 		const value = like == 1 ? Like.LIKE : Like.DISLIKE;
 		const userId = mongoose.Types.ObjectId(req.session!.userId);
 
-		const routes = await Route.findOneAndUpdate(
-			{ _id: routeId, 'upvotes.userId': userId }, // Check if userId alredy upvoted
-			{ $set: { 'upvotes.$.value': value } }, // If does update
-			{ new: true },
-			async (_, raw) => {
-				// If doesn't push to upvotes
-				if (!raw) {
-					const newUpvote = { value, userId };
-					return await Route.findByIdAndUpdate(routeId, {
-						$addToSet: { upvotes: newUpvote }
-					});
-				} else return raw;
-			}
-		);
+		const upvotes = await Route.findOne({
+			_id: routeId,
+			'upvotes.userId': userId
+		});
 
-		return res.json(routes);
+		if (upvotes) {
+			// Update if user alredy upvotes and the value is different
+			const modified = await Route.updateOne(
+				{
+					_id: routeId,
+					'upvotes.userId': userId,
+					'upvotes.value': value * -1
+				},
+				{
+					$inc: { votesCounter: value * 2 },
+					$set: { 'upvotes.$.value': value }
+				}
+			);
+			// remove upvote/downvote
+			if (modified.nModified == 0) {
+				await Route.updateOne(
+					{ _id: routeId },
+					{
+						$pull: { upvotes: { userId } },
+						$inc: { votesCounter: value * -1 }
+					}
+				);
+			}
+		} else {
+			// Add un upvote
+			await Route.findByIdAndUpdate(routeId, {
+				$inc: { votesCounter: value },
+				$addToSet: { upvotes: { value, userId } }
+			});
+		}
+
+		return res.json({ success: true, message: 'Update with success' });
 	} catch (error) {
 		console.log(error);
-		return res.json(error);
+		return res.json({ success: false, message: error });
 	}
 };

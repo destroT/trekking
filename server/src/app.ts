@@ -9,6 +9,7 @@ import { SECRET, __PROD__ } from './config/constants';
 import authRoutes from './routes/auth.routes';
 import reviewRoutes from './routes/review.routes';
 import routeRoutes from './routes/route.routes';
+import commentRoutes from './routes/comment.routes';
 
 /**
  * Init
@@ -52,5 +53,6 @@ try {
 app.use('/api/auth', authRoutes);
 app.use('/api/review', reviewRoutes);
 app.use('/api/route', routeRoutes);
+app.use('/api/comment', commentRoutes);
 
 export default app;

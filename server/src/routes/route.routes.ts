@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import isAuth from '../middlewares/isAuth';
+import validateId from '../middlewares/validateId';
 import {
 	create,
 	del,
@@ -7,7 +8,7 @@ import {
 	getAll,
 	like
 } from '../controllers/route.controller';
-import validateId from '../middlewares/validateId';
+
 const router = Router();
 
 router.post('/', isAuth, create);

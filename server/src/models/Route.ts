@@ -69,6 +69,9 @@ class RouteModel extends TimeStamps {
 
 	@prop({ type: mongoose.Schema.Types.Mixed })
 	upvotes: { value: Like; userId: Ref<typeof User> }[];
+
+	@prop({ default: 0 })
+	votesCounter: number;
 }
 
 const Route = getModelForClass(RouteModel);

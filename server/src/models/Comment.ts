@@ -1,22 +1,28 @@
-import { prop, getModelForClass, Ref } from "@typegoose/typegoose";
-import { TimeStamps } from "@typegoose/typegoose/lib/defaultClasses";
-import Review from "./Review";
-import User from "./User";
+import {
+	prop,
+	Ref,
+	modelOptions,
+	getModelForClass
+} from '@typegoose/typegoose';
+import UpvotesHandler from './UpvotesHandler';
+import User from './User';
 
+@modelOptions({ options: { customName: 'Comment' } })
+class CommentModel {
+	// @prop({ ref: () => Review, required: true })
+	// review!: Ref<typeof Review>;
 
-class CommentModel extends TimeStamps {
+	@prop({ ref: () => User, required: true })
+	author!: Ref<typeof User>;
 
-    @prop({ ref: () => Review})
-    review!: Ref<typeof Review>;
+	// @prop({ ref: () => CommentModel })
+	// parent?: CommentModel;
 
-    @prop({ ref: () => User, required: true})
-    author!: Ref<typeof User>;
-    
-    @prop()
-    parent?: ;
+	@prop({ required: true, maxlength: 140, minlength: 3 })
+	text: string;
 
-    @prop({ required: true, maxlength: 140, minlength: 5 })
-    comment: string;
+	@prop({ ref: () => UpvotesHandler })
+	votes: Ref<typeof UpvotesHandler>;
 }
 
 const Comment = getModelForClass(CommentModel);
