@@ -4,19 +4,36 @@ import {
 	mongoose,
 	prop,
 	Ref,
+	ReturnModelType,
 	Severity
 } from '@typegoose/typegoose';
 import { Like } from './enums';
 import User from './User';
 
-@modelOptions({ options: { customName: 'Votes', allowMixed: Severity.ALLOW } })
-class UpvotesHandlerModel {
+@modelOptions({
+	options: { customName: 'votes', allowMixed: Severity.ALLOW },
+	schemaOptions: { discriminatorKey: 'type' }
+})
+class UpvotesHandler {
 	@prop({ default: 0 })
-	votesCounter: number;
+	public votesCounter: number;
 
-	@prop({ type: mongoose.Schema.Types.Mixed })
-	public upvote: { value: Like; userId: Ref<typeof User> };
+	@prop({ type: mongoose.Schema.Types.Mixed, default: [] })
+	public votes: { value: Like; userId: Ref<typeof User> }[];
+
+	public static updateVotes(
+		this: ReturnModelType<typeof UpvotesHandler>,
+		value: Like,
+		userId: mongoose.Schema.Types.ObjectId
+	) {
+		const res = {
+			success: true,
+			message: `Update with success! ${value} ${userId}`
+		};
+
+		return res;
+	}
 }
 
-const UpvotesHandler = getModelForClass(UpvotesHandlerModel);
-export default UpvotesHandler;
+const UpvotesHandlerModel = getModelForClass(UpvotesHandler);
+export { UpvotesHandlerModel, UpvotesHandler };

@@ -2,13 +2,13 @@ import {
 	prop,
 	Ref,
 	modelOptions,
-	getModelForClass
+	getDiscriminatorModelForClass
 } from '@typegoose/typegoose';
-import UpvotesHandler from './UpvotesHandler';
+import { UpvotesHandlerModel, UpvotesHandler } from './UpvotesHandler';
 import User from './User';
 
 @modelOptions({ options: { customName: 'Comment' } })
-class CommentModel {
+class CommentModel extends UpvotesHandler {
 	// @prop({ ref: () => Review, required: true })
 	// review!: Ref<typeof Review>;
 
@@ -20,10 +20,10 @@ class CommentModel {
 
 	@prop({ required: true, maxlength: 140, minlength: 3 })
 	text: string;
-
-	@prop({ ref: () => UpvotesHandler, required: true })
-	votes!: Ref<typeof UpvotesHandler>;
 }
 
-const Comment = getModelForClass(CommentModel);
+const Comment = getDiscriminatorModelForClass(
+	UpvotesHandlerModel,
+	CommentModel
+);
 export default Comment;
