@@ -8,6 +8,6 @@ router.post('/add', isAuth, add);
 router.get('/', getAll);
 router.get('/:id', validateId, get);
 router.delete('/:id', isAuth, validateId, del);
-router.post('/upvote', isAuth, like);
+router.post('/vote', isAuth, like);
 
 export default router;

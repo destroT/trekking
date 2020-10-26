@@ -5,8 +5,7 @@ import {
 	getModelForClass,
 	mongoose,
 	modelOptions,
-	Severity,
-	pre
+	Severity
 } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Like } from './enums';
@@ -16,20 +15,20 @@ import User from './User';
  * TODO: Add comments
  * TODO: Add Photos
  */
-@pre<ReviewModel>('save', function (next) {
-	try {
-		let c = 0;
+// @pre<ReviewModel>('save', function (next) {
+// 	try {
+// 		let c = 0;
 
-		if (this.upvotes !== undefined)
-			this.upvotes.filter((e) => (c = c + e.value));
+// 		if (this.upvotes !== undefined)
+// 			this.upvotes.filter((e) => (c = c + e.value));
 
-		this.upvoteCounter = c;
+// 		this.upvoteCounter = c;
 
-		next();
-	} catch (error) {
-		console.log(error);
-	}
-})
+// 		next();
+// 	} catch (error) {
+// 		console.log(error);
+// 	}
+// })
 @modelOptions({ options: { customName: 'Review', allowMixed: Severity.ALLOW } })
 class ReviewModel extends TimeStamps {
 	@prop({ ref: () => Route })
@@ -47,11 +46,11 @@ class ReviewModel extends TimeStamps {
 	@prop({ required: true, min: 0, max: 100 })
 	rank!: number;
 
-	@prop({ type: mongoose.Schema.Types.Mixed })
-	upvotes: { value: Like; userId: Ref<typeof User> }[];
+	@prop({ type: mongoose.Schema.Types.Mixed, default: [] })
+	votes: { value: Like; userId: Ref<typeof User> }[];
 
 	@prop({ default: 0 })
-	upvoteCounter?: number;
+	votesCounter: number;
 
 	//photos: [{ url: string, userId: Ref<typeof User> }];
 
