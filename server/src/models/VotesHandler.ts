@@ -10,7 +10,7 @@ import { Like } from './enums';
 import User from './User';
 
 @modelOptions({ options: { customName: 'Votes', allowMixed: Severity.ALLOW } })
-class UpvotesHandlerModel {
+class VotesHandlerModel {
 	@prop({ default: 0 })
 	votesCounter: number;
 
@@ -18,5 +18,5 @@ class UpvotesHandlerModel {
 	public upvote: { value: Like; userId: Ref<typeof User> };
 }
 
-const UpvotesHandler = getModelForClass(UpvotesHandlerModel);
-export default UpvotesHandler;
+const VotesHandler = getModelForClass(VotesHandlerModel);
+export default VotesHandler;

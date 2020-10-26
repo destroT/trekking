@@ -4,7 +4,7 @@ import {
 	modelOptions,
 	getModelForClass
 } from '@typegoose/typegoose';
-import UpvotesHandler from './UpvotesHandler';
+import VotesHandler from './VotesHandler';
 import User from './User';
 
 @modelOptions({ options: { customName: 'Comment' } })
@@ -21,8 +21,8 @@ class CommentModel {
 	@prop({ required: true, maxlength: 140, minlength: 3 })
 	text: string;
 
-	@prop({ ref: () => UpvotesHandler, required: true })
-	votes!: Ref<typeof UpvotesHandler>;
+	@prop({ ref: () => VotesHandler, required: true })
+	votes!: Ref<typeof VotesHandler>;
 }
 
 const Comment = getModelForClass(CommentModel);
