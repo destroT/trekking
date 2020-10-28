@@ -5,7 +5,7 @@ import {
 	getModelForClass,
 	mongoose,
 	modelOptions,
-	Severity
+	Severity,
 } from '@typegoose/typegoose';
 import { TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Like } from './enums';
@@ -31,8 +31,8 @@ import User from './User';
 // })
 @modelOptions({ options: { customName: 'Review', allowMixed: Severity.ALLOW } })
 class ReviewModel extends TimeStamps {
-	@prop({ ref: () => Route })
-	route: Ref<typeof Route>;
+	@prop({ ref: () => Route, required: true })
+	route!: Ref<typeof Route>;
 
 	@prop({ ref: () => User, required: true })
 	author!: Ref<typeof User>;

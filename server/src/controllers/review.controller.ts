@@ -4,11 +4,18 @@ import { mongoose } from '@typegoose/typegoose';
 import { votesHandler } from './votesHandler';
 
 export const add = async (req: Request, res: Response) => {
-	const { title, description, rank } = req.body;
+	const { routeId, title, description, rank } = req.body;
 
 	try {
 		const author = mongoose.Types.ObjectId(req.session!.userId);
-		const newReview = new Review({ author, title, description, rank });
+		const route = mongoose.Types.ObjectId(routeId);
+		const newReview = new Review({
+			route,
+			author,
+			title,
+			description,
+			rank,
+		});
 		await newReview.save();
 		return res.json(newReview);
 	} catch (error) {
@@ -26,7 +33,6 @@ export const like = async (req: Request, res: Response) => {
 			req.session!.userId,
 			value
 		);
-		console.log(result);
 		return res.json(result);
 	} catch (error) {
 		return res.json(error);
@@ -55,7 +61,7 @@ export const del = async (req: Request, res: Response) => {
 		// * This verison runs in ~50-70ms
 		const review = await Review.findOneAndDelete({
 			_id: id,
-			author: userId
+			author: userId,
 		});
 		if (!review) return res.status(400).json({ msg: 'Invalid id' });
 		return res.json({ msg: 'Object removed with success!' });
